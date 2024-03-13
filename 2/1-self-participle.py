@@ -69,23 +69,22 @@ if __name__ == "__main__":
     if len(sys.argv) != 5:
         print("Usage: python3 ./1-self-participle.py custom_segmentation_dict output_dict_path")
     else:
-    input_vocab_file, output_vocab_file, input_text_file, output_text_file = sys.argv[1:5]
+        input_vocab_file, output_vocab_file, input_text_file, output_text_file = sys.argv[1:5]
+        vocabulary = extract_vocabulary(input_vocab_file)
+        with open(output_vocab_file, 'w', encoding='utf-8') as file:
+            file.write(str(vocabulary))
 
-    vocabulary = extract_vocabulary(input_vocab_file)
-    with open(output_vocab_file, 'w', encoding='utf-8') as file:
-        file.write(str(vocabulary))
+        trie = Trie()
+        for word in vocabulary:
+            trie.insert(word)
 
-    trie = Trie()
-    for word in vocabulary:
-        trie.insert(word)
+        with open(input_text_file, 'r', encoding='utf-8') as file:
+            lines = file.readlines()
 
-    with open(input_text_file, 'r', encoding='utf-8') as file:
-        lines = file.readlines()
-
-    segmented_texts = ''
-    for line in lines:
-        clean_line = re.sub(r"^\d+\s+", "", line)
-        segmented_text = max_forward_matching(clean_line, trie)
-        segmented_texts += segmented_text
-    with open(output_text_file, 'w', encoding='utf-8') as file:
-        file.write(segmented_texts)
+        segmented_texts = ''
+        for line in lines:
+            clean_line = re.sub(r"^\d+\s+", "", line)
+            segmented_text = max_forward_matching(clean_line, trie)
+            segmented_texts += segmented_text
+        with open(output_text_file, 'w', encoding='utf-8') as file:
+            file.write(segmented_texts)
