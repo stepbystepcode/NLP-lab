@@ -8,13 +8,22 @@ def preprocess_and_label(text):
         
         for word in words:
             char, tag = word.split('/')
+
+            
             if tag == 'nr':
-                if len(char) > 1:
-                    labeled_sentence.append((char[0], 'SP'))
-                    for c in char[1:]:
-                        labeled_sentence.append((c, 'CP'))
+                nr_count += 1
+                if nr_count % 2 == 1:
+                    if len(char) > 1:
+                        labeled_sentence.append((char[0], 'SP'))
+                        for c in char[1:]:
+                            labeled_sentence.append((c, 'CP'))
+                    else:
+                        labeled_sentence.append((char, 'SP'))
                 else:
-                    labeled_sentence.append((char, 'SP'))
+                    for c in char:
+                        labeled_sentence.append((c, 'CP'))
+
+            
             elif tag == 'ns':
                 if len(char) > 1:
                     labeled_sentence.append((char[0], 'SL'))
